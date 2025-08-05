@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
 
 interface FormData {
@@ -18,6 +18,11 @@ interface QRResponse {
   qrString: string;
 }
 
+// Interface for field-specific errors
+interface FieldErrors {
+  [key: string]: string;
+}
+
 export const QRForm: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     acc: '',
@@ -32,17 +37,28 @@ export const QRForm: React.FC = () => {
   });
 
   const [qrCode, setQrCode] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<FieldErrors>({});
+  const [generalError, setGeneralError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const {name, value} = e.target;
+    setFormData(prev => ({...prev, [name]: value}));
+
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors(prev => {
+        const newErrors = {...prev};
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+    setErrors({});
+    setGeneralError(null);
     setQrCode(null);
     setLoading(true);
 
@@ -56,10 +72,16 @@ export const QRForm: React.FC = () => {
       const response = await axios.post<QRResponse>('/qr-platba', payload);
       setQrCode(response.data.qrCode);
     } catch (err) {
+      console.log(err);
       if (axios.isAxiosError(err) && err.response) {
-        setError(err.response.data.error || 'An error occurred');
+        // Check if the response contains field-specific errors
+        if (typeof err.response.data === 'object' && err.response.data !== null) {
+          setErrors(err.response.data);
+        } else {
+          setGeneralError(err.response.data || 'An error occurred');
+        }
       } else {
-        setError('An unexpected error occurred');
+        setGeneralError('An unexpected error occurred');
       }
       console.error('Error generating QR code:', err);
     } finally {
@@ -71,7 +93,7 @@ export const QRForm: React.FC = () => {
     <div className="qr-form-container">
       <h2>Generate QR Payment Code</h2>
 
-      {error && <div className="error-message">{error}</div>}
+      {generalError && <div className="error-message">{generalError}</div>}
 
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -82,10 +104,12 @@ export const QRForm: React.FC = () => {
             name="acc"
             value={formData.acc}
             onChange={handleChange}
-            placeholder="Format: 000000-000000000000/0000"
+            placeholder="Format: (000000-)000000000000/0000"
             required
+            className={errors.acc ? 'input-error' : ''}
           />
           <small>Format: 000000-000000000000/0000</small>
+          {errors.acc && <div className="field-error">{errors.acc}</div>}
         </div>
 
         <div className="form-group">
@@ -97,7 +121,9 @@ export const QRForm: React.FC = () => {
             value={formData.rec}
             onChange={handleChange}
             placeholder="Recipient name"
+            className={errors.rec ? 'input-error' : ''}
           />
+          {errors.rec && <div className="field-error">{errors.rec}</div>}
         </div>
 
         <div className="form-group">
@@ -112,7 +138,9 @@ export const QRForm: React.FC = () => {
             step="0.01"
             min="0.01"
             required
+            className={errors.am ? 'input-error' : ''}
           />
+          {errors.am && <div className="field-error">{errors.am}</div>}
         </div>
 
         <div className="form-group">
@@ -123,11 +151,13 @@ export const QRForm: React.FC = () => {
             value={formData.cc}
             onChange={handleChange}
             required
+            className={errors.cc ? 'input-error' : ''}
           >
             <option value="CZK">CZK</option>
             <option value="EUR">EUR</option>
             <option value="USD">USD</option>
           </select>
+          {errors.cc && <div className="field-error">{errors.cc}</div>}
         </div>
 
         <div className="form-group">
@@ -140,7 +170,9 @@ export const QRForm: React.FC = () => {
             onChange={handleChange}
             placeholder="Max 10 digits"
             pattern="\d{0,10}"
+            className={errors.vs ? 'input-error' : ''}
           />
+          {errors.vs && <div className="field-error">{errors.vs}</div>}
         </div>
 
         <div className="form-group">
@@ -153,7 +185,9 @@ export const QRForm: React.FC = () => {
             onChange={handleChange}
             placeholder="Max 10 digits"
             pattern="\d{0,10}"
+            className={errors.ss ? 'input-error' : ''}
           />
+          {errors.ss && <div className="field-error">{errors.ss}</div>}
         </div>
 
         <div className="form-group">
@@ -166,7 +200,9 @@ export const QRForm: React.FC = () => {
             onChange={handleChange}
             placeholder="Max 4 digits"
             pattern="\d{0,4}"
+            className={errors.ks ? 'input-error' : ''}
           />
+          {errors.ks && <div className="field-error">{errors.ks}</div>}
         </div>
 
         <div className="form-group">
@@ -179,8 +215,10 @@ export const QRForm: React.FC = () => {
             onChange={handleChange}
             placeholder="Format: YYYYMMDD"
             pattern="\d{8}"
+            className={errors.dt ? 'input-error' : ''}
           />
           <small>Format: YYYYMMDD</small>
+          {errors.dt && <div className="field-error">{errors.dt}</div>}
         </div>
 
         <div className="form-group">
@@ -192,7 +230,9 @@ export const QRForm: React.FC = () => {
             value={formData.msg}
             onChange={handleChange}
             placeholder="Payment message"
+            className={errors.msg ? 'input-error' : ''}
           />
+          {errors.msg && <div className="field-error">{errors.msg}</div>}
         </div>
 
         <button type="submit" disabled={loading}>
@@ -203,7 +243,7 @@ export const QRForm: React.FC = () => {
       {qrCode && (
         <div className="qr-result">
           <h3>Your QR Code</h3>
-          <img src={qrCode} alt="QR Payment Code" />
+          <img src={qrCode} alt="QR Payment Code"/>
           <p>Scan this QR code with your banking app to make the payment.</p>
         </div>
       )}

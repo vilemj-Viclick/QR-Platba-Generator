@@ -18,44 +18,49 @@ app.use(express.static(path.join(__dirname, '../app')));
 app.post('/qr-platba', async (req: Request, res: Response) => {
     try {
         const { acc, rec, am, cc, vs, ss, ks, dt, msg } = req.body as QRPlatbaRequest;
+        
+        // Object to collect all validation errors
+        const errors: Partial<Record<keyof QRPlatbaRequest, string>> = {};
 
         // Validate mandatory fields
         if (!acc) {
-            return res.status(400).json({ error: 'Account number (acc) is required' });
-        }
-        if (!isValidAccountNumber(acc)) {
-            return res.status(400).json({ error: 'Invalid account number format. Expected format: 000000-000000000000/0000' });
+            errors.acc = 'Account number is required';
+        } else if (!isValidAccountNumber(acc)) {
+            errors.acc = 'Invalid account number format. Expected format: 000000-000000000000/0000';
         }
 
         if (am === undefined) {
-            return res.status(400).json({ error: 'Amount (am) is required' });
-        }
-        if (!isValidAmount(am)) {
-            return res.status(400).json({ error: 'Invalid amount. Must be a positive number' });
+            errors.am = 'Amount is required';
+        } else if (!isValidAmount(am)) {
+            errors.am = 'Invalid amount. Must be a positive number';
         }
 
         if (!cc) {
-            return res.status(400).json({ error: 'Currency (cc) is required' });
-        }
-        if (!isValidCurrency(cc)) {
-            return res.status(400).json({ error: 'Invalid currency code' });
+            errors.cc = 'Currency is required';
+        } else if (!isValidCurrency(cc)) {
+            errors.cc = 'Invalid currency code';
         }
 
         // Validate optional fields
         if (vs && !isValidDigitString(vs, 10)) {
-            return res.status(400).json({ error: 'Invalid variable symbol. Must be a string of digits, max 10 characters' });
+            errors.vs = 'Invalid variable symbol. Must be a string of digits, max 10 characters';
         }
 
         if (ss && !isValidDigitString(ss, 10)) {
-            return res.status(400).json({ error: 'Invalid specific symbol. Must be a string of digits, max 10 characters' });
+            errors.ss = 'Invalid specific symbol. Must be a string of digits, max 10 characters';
         }
 
         if (ks && !isValidDigitString(ks, 4)) {
-            return res.status(400).json({ error: 'Invalid constant symbol. Must be a string of digits, max 4 characters' });
+            errors.ks = 'Invalid constant symbol. Must be a string of digits, max 4 characters';
         }
 
         if (dt && !isValidDate(dt)) {
-            return res.status(400).json({ error: 'Invalid date format. Expected format: YYYYMMDD' });
+            errors.dt = 'Invalid date format. Expected format: YYYYMMDD';
+        }
+        
+        // If there are any validation errors, return them
+        if (Object.keys(errors).length > 0) {
+            return res.status(400).json(errors);
         }
 
         // Generate QR code string

@@ -8,7 +8,7 @@ export default defineConfig({
   root: '.', // Set the root directory to the current directory
   publicDir: 'public', // Public assets directory
   build: {
-    outDir: 'build', // Output directory for the build
+    outDir: '../dist/app/', // Output directory for the build
     emptyOutDir: true, // Empty the output directory before building
   },
   server: {

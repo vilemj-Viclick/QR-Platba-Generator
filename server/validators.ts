@@ -7,7 +7,7 @@
  */
 export function isValidAccountNumber(acc: string): boolean {
     // Format: "000000-000000000000/0000"
-    const regex = /^(\d{6}-)?\d{1,12}\/\d{4}$/;
+    const regex = /^(\d{1,6}-)?\d{1,12}\/\d{4}$/;
     return regex.test(acc);
 }
 
