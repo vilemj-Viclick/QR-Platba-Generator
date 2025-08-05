@@ -10,6 +10,7 @@ export default defineConfig({
   build: {
     outDir: '../dist/app/', // Output directory for the build
     emptyOutDir: true, // Empty the output directory before building
+    sourcemap: true, // Enable source maps in production
   },
   server: {
     port: 3000, // Default port for development server
