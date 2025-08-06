@@ -1,6 +1,6 @@
 {
   "name": "qr-platba-generator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "QR code string generator for Czech payment system (QR Platba)",
   "repository": "https://github.com/vilemj-Viclick/QR-Platba-Generator",
   "main": "dist/index.js",
