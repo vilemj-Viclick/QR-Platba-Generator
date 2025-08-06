@@ -1,5 +1,5 @@
 // Import the QRPlatbaRequest interface
-import {QRPlatbaRequest} from './types';
+import {ErrorReport, QRPlatbaRequest} from './types';
 
 const isNonEmptyString = (str: string | undefined | null): boolean =>
   (str !== undefined) && (str !== null) && str.trim() !== '';
@@ -71,11 +71,6 @@ function isValidCurrency(currency: string): boolean {
   const validCurrencies = ['CZK', 'EUR', 'USD'];
   return validCurrencies.includes(currency);
 }
-
-type ErrorReport = {
-  readonly msg: string;
-  readonly code: string
-};
 
 /**
  * Validates the QR payment request data.

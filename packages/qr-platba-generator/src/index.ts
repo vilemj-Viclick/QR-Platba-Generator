@@ -3,10 +3,11 @@
 // Import from separated modules
 import { validateQRPlatbaRequest } from './validators';
 import { convertToIBAN } from './iban';
-import { type QRPlatbaRequest } from './types';
+import { type QRPlatbaRequest, type ErrorReport, type ErrorCode } from './types';
 
 /**
- * Generates a QR code string according to the QR Platba specification.
+ * Generates a QR code string according to the QR Platba specification:
+ * https://qr-platba.cz/pro-vyvojare/specifikace-formatu/
  * @param data QR payment request data
  * @returns Formatted QR code string
  */
@@ -37,4 +38,4 @@ export function generateQRString(data: QRPlatbaRequest): string {
 }
 
 // Re-export the validateQRPlatbaRequest function and QRPlatbaRequest interface
-export { validateQRPlatbaRequest, type QRPlatbaRequest };
+export { validateQRPlatbaRequest, type QRPlatbaRequest, type ErrorReport, type ErrorCode };
