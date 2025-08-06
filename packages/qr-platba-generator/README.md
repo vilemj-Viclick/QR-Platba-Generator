@@ -35,7 +35,7 @@ const qrString = generateQRString(paymentData);
 console.log(qrString);
 // Output: SPD*1.0*ACC:CZ7508000000000123456789*AM:100.50*CC:CZK*VS:1234567890*SS:0987654321*KS:1234*DT:20250806*MSG:Payment for services*RN:John Doe
 
-// Generate QR code image (requires qrcode package)
+// Generate QR code image (requires qrcode package - You can use any package of your choice to generate the actual QR code.)
 QRCode.toDataURL(qrString, (err, url) => {
   if (err) {
     console.error('Error generating QR code:', err);
@@ -64,52 +64,6 @@ if (validationErrors) {
 } else {
   console.log('Payment data is valid');
 }
-```
-
-### Individual Validation Functions
-
-You can also use the individual validation functions:
-
-```typescript
-import {
-  isValidAccountNumber,
-  isValidAmount,
-  isValidCurrency,
-  isValidDigitString,
-  isValidDate
-} from 'qr-platba-generator';
-
-// Validate account number
-console.log(isValidAccountNumber('123456789/0800')); // true
-console.log(isValidAccountNumber('invalid')); // false
-
-// Validate amount
-console.log(isValidAmount(100.50)); // true
-console.log(isValidAmount(-100)); // false
-
-// Validate currency
-console.log(isValidCurrency('CZK')); // true
-console.log(isValidCurrency('INVALID')); // false
-
-// Validate digit string (for VS, SS, KS)
-console.log(isValidDigitString('1234567890', 10)); // true
-console.log(isValidDigitString('abc', 10)); // false
-
-// Validate date
-console.log(isValidDate('20250806')); // true
-console.log(isValidDate('2025-08-06')); // false
-```
-
-### IBAN Conversion
-
-The library can convert Czech account numbers to IBAN format:
-
-```typescript
-import {convertToIBAN} from 'qr-platba-generator';
-
-// Convert account number to IBAN
-console.log(convertToIBAN('123456789/0800')); // CZ7508000000000123456789
-console.log(convertToIBAN('19-2000145399/0800')); // CZ6508000000192000145399
 ```
 
 ## API Reference
@@ -141,30 +95,6 @@ Generates a QR code string according to the QR Platba specification.
 #### validateQRPlatbaRequest(data: QRPlatbaRequest): Record<string, string> | null
 
 Validates the QR payment request data. Returns null if valid, or an object with validation errors.
-
-#### convertToIBAN(accountNumber: string): string
-
-Converts a Czech account number to IBAN format.
-
-#### isValidAccountNumber(acc: string): boolean
-
-Validates if the account number is in the correct format.
-
-#### isValidDigitString(str: string | undefined, maxLength: number): boolean
-
-Validates if a string contains only digits and is within the specified length.
-
-#### isValidDate(dateStr: string | undefined): boolean
-
-Validates if a date string is in the correct format and represents a valid date.
-
-#### isValidAmount(amount: number | undefined): boolean
-
-Validates if an amount is a positive number.
-
-#### isValidCurrency(currency: string): boolean
-
-Validates if a currency code is supported.
 
 ## License
 

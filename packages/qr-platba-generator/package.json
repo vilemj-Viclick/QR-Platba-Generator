@@ -1,7 +1,7 @@
 {
   "name": "qr-platba-generator",
   "version": "1.0.0",
-  "description": "QR code generator for Czech payment system (QR Platba)",
+  "description": "QR code string generator for Czech payment system (QR Platba)",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
