@@ -1,0 +1,35 @@
+{
+  "name": "qr-platba-generator",
+  "version": "1.0.0",
+  "description": "QR code generator for Czech payment system (QR Platba)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build && tsc --emitDeclarationOnly",
+    "test": "vitest run",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "qr",
+    "qrcode",
+    "payment",
+    "czech",
+    "platba",
+    "iban"
+  ],
+  "author": "Vilém Ťulák Jeniš",
+  "license": "MIT",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2",
+    "vite": "^5.4.19",
+    "vitest": "^3.2.4"
+  },
+  "peerDependencies": {
+    "qrcode": "^1.5.4"
+  }
+}
