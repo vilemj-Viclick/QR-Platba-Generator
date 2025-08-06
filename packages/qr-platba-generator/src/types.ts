@@ -4,7 +4,7 @@
 export interface QRPlatbaRequest {
   /** Account number in format "prefix-number/bankCode" or "number/bankCode" */
   acc: string;
-  /** Optional recipient name */
+  /** Optional recipient name (max 250 characters) */
   rec?: string;
   /** Amount in given currency */
   am: number;
@@ -18,7 +18,7 @@ export interface QRPlatbaRequest {
   ks?: string;
   /** Optional due date in format YYYYMMDD */
   dt?: string;
-  /** Optional message */
+  /** Optional message (max 250 characters)*/
   msg?: string;
 }
 

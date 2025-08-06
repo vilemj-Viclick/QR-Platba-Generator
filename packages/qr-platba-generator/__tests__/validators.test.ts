@@ -5,7 +5,8 @@ import {
   isValidDigitString,
   isValidDate,
   isValidAmount,
-  isValidCurrency
+  isValidCurrency,
+  isValidStringLength
 } from '../src/validators';
 import { QRPlatbaRequest } from '../src/types';
 
@@ -68,6 +69,38 @@ describe('validateQRPlatbaRequest', () => {
     expect(result?.ss).toBeDefined();
     expect(result?.ks).toBeDefined();
     expect(result?.dt).toBeDefined();
+  });
+
+  it('should return errors for msg and rec fields exceeding 250 characters', () => {
+    const longString = 'A'.repeat(251);
+    const data: QRPlatbaRequest = {
+      acc: '123456789/0800',
+      am: 100.50,
+      cc: 'CZK',
+      msg: longString,
+      rec: longString
+    };
+
+    const result = validateQRPlatbaRequest(data);
+    expect(result).not.toBeNull();
+    expect(result?.msg).toBeDefined();
+    expect(result?.msg?.code).toBe('format');
+    expect(result?.rec).toBeDefined();
+    expect(result?.rec?.code).toBe('format');
+  });
+
+  it('should accept msg and rec fields within 250 characters', () => {
+    const validString = 'A'.repeat(250);
+    const data: QRPlatbaRequest = {
+      acc: '123456789/0800',
+      am: 100.50,
+      cc: 'CZK',
+      msg: validString,
+      rec: validString
+    };
+
+    const result = validateQRPlatbaRequest(data);
+    expect(result).toBeNull();
   });
 });
 
@@ -142,6 +175,20 @@ describe('Validation functions', () => {
       expect(isValidCurrency('INVALID')).toBe(false);
       expect(isValidCurrency('czk')).toBe(false);
       expect(isValidCurrency('')).toBe(false);
+    });
+  });
+
+  describe('isValidStringLength', () => {
+    it('should return true for strings within the specified length', () => {
+      expect(isValidStringLength('Hello', 10)).toBe(true);
+      expect(isValidStringLength('', 10)).toBe(true);
+      expect(isValidStringLength('A'.repeat(250), 250)).toBe(true);
+      expect(isValidStringLength(undefined, 250)).toBe(true);
+    });
+
+    it('should return false for strings exceeding the specified length', () => {
+      expect(isValidStringLength('A'.repeat(251), 250)).toBe(false);
+      expect(isValidStringLength('Too long string', 5)).toBe(false);
     });
   });
 });

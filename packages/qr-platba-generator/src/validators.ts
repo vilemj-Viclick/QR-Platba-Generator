@@ -1,9 +1,6 @@
 // Import the QRPlatbaRequest interface
 import {ErrorReport, QRPlatbaRequest} from './types';
 
-const isNonEmptyString = (str: string | undefined | null): boolean =>
-  (str !== undefined) && (str !== null) && str.trim() !== '';
-
 const isFiniteNumber = (num: number | undefined | null): boolean =>
   (typeof num === 'number') && !isNaN(num) && isFinite(num);
 
@@ -70,6 +67,17 @@ function isValidCurrency(currency: string): boolean {
   // Common currencies, can be expanded
   const validCurrencies = ['CZK', 'EUR', 'USD'];
   return validCurrencies.includes(currency);
+}
+
+/**
+ * Validates if a string is within the specified length.
+ * @param str String to validate
+ * @param maxLength Maximum allowed length
+ * @returns Boolean indicating if the string is valid
+ */
+function isValidStringLength(str: string | undefined, maxLength: number): boolean {
+  if (!str) return true; // Optional field
+  return str.length <= maxLength;
 }
 
 /**
@@ -146,6 +154,22 @@ export function validateQRPlatbaRequest(data: QRPlatbaRequest): Partial<Record<k
     };
   }
 
+  // Validate msg field length
+  if (data.msg && !isValidStringLength(data.msg, 250)) {
+    errors.msg = {
+      msg: 'Zpráva je příliš dlouhá. Maximální délka je 250 znaků',
+      code: 'format'
+    };
+  }
+
+  // Validate rec field length
+  if (data.rec && !isValidStringLength(data.rec, 250)) {
+    errors.rec = {
+      msg: 'Jméno příjemce je příliš dlouhé. Maximální délka je 250 znaků',
+      code: 'format'
+    };
+  }
+
   // If there are any validation errors, return them
   if (Object.keys(errors).length > 0) {
     return errors as Record<string, { msg: string; code: string }>;
@@ -160,5 +184,6 @@ export {
   isValidDigitString,
   isValidDate,
   isValidAmount,
-  isValidCurrency
+  isValidCurrency,
+  isValidStringLength
 };

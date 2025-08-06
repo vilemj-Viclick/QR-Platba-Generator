@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import QRCode from 'qrcode';
 import {generateQRString, QRPlatbaRequest, validateQRPlatbaRequest} from 'qr-platba-generator';
 
@@ -30,11 +30,19 @@ export const QRForm: React.FC = () => {
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [generalError, setGeneralError] = useState<string | null>(null);
+  const [recCharsRemaining, setRecCharsRemaining] = useState<number>(250 - (formData.rec?.length ?? 0));
+  const [msgCharsRemaining, setMsgCharsRemaining] = useState<number>(250 - (formData.msg?.length ?? 0));
+  
+  // Update character counters when formData changes
+  useEffect(() => {
+    setRecCharsRemaining(250 - (formData.rec?.length ?? 0));
+    setMsgCharsRemaining(250 - (formData.msg?.length ?? 0));
+  }, [formData.rec, formData.msg]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const {name, value} = e.target;
     
-    // Special handling for date field
+    // Special handling for the date field
     if (name === 'dt' && value) {
       // Convert from YYYY-MM-DD to YYYYMMDD
       const formattedDate = value.replace(/-/g, '');
@@ -43,7 +51,7 @@ export const QRForm: React.FC = () => {
       setFormData(prev => ({...prev, [name]: value}));
     }
 
-    // Clear error for this field when user starts typing
+    // Clear error for this field when the user starts typing
     if (errors[name]) {
       setErrors(prev => {
         const newErrors = {...prev};
@@ -120,9 +128,11 @@ export const QRForm: React.FC = () => {
               name="rec"
               value={formData.rec}
               onChange={handleChange}
-              placeholder="Jméno příjemce"
+              placeholder="Jméno příjemce (max 250 znaků)"
+              maxLength={250}
               className={errors.rec ? 'input-error' : ''}
             />
+            <small>Zbývá {recCharsRemaining} znaků</small>
             {errors.rec && <div className="field-error">{errors.rec.msg}</div>}
           </div>
 
@@ -223,9 +233,11 @@ export const QRForm: React.FC = () => {
               name="msg"
               value={formData.msg}
               onChange={handleChange}
-              placeholder="Platební zpráva"
+              placeholder="Platební zpráva (max 250 znaků)"
+              maxLength={250}
               className={errors.msg ? 'input-error' : ''}
             />
+            <small>Zbývá {msgCharsRemaining} znaků</small>
             {errors.msg && <div className="field-error">{errors.msg.msg}</div>}
           </div>
 
@@ -251,5 +263,3 @@ export const QRForm: React.FC = () => {
     </div>
   );
 };
-
-export default QRForm;
