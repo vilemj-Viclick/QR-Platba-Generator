@@ -156,7 +156,7 @@ export function convertToIBAN(accountNumber: string): string {
  * @param data QR payment request data
  * @returns Object with validation errors or null if valid
  */
-export function validateQRPlatbaRequest(data: QRPlatbaRequest): Record<string, string> | null {
+export function validateQRPlatbaRequest(data: QRPlatbaRequest): Partial<Record<keyof QRPlatbaRequest, string>> | null {
   const errors: Partial<Record<keyof QRPlatbaRequest, string>> = {};
 
   // Validate mandatory fields

@@ -1,22 +1,10 @@
 import React, {useState} from 'react';
-import axios from 'axios';
+import QRCode from 'qrcode';
+import {generateQRString, QRPlatbaRequest, validateQRPlatbaRequest} from 'qr-platba-generator';
 
-interface FormData {
-  acc: string;
-  rec: string;
-  am: string;
-  cc: string;
-  vs: string;
-  ss: string;
-  ks: string;
-  dt: string;
-  msg: string;
-}
-
-interface QRResponse {
-  qrCode: string;
-  qrString: string;
-}
+type FormData = {
+  [key in keyof QRPlatbaRequest]: string;
+};
 
 // Interface for field-specific errors
 interface FieldErrors {
@@ -64,26 +52,31 @@ export const QRForm: React.FC = () => {
 
     try {
       // Convert amount to number
-      const payload = {
+      const payload: QRPlatbaRequest = {
         ...formData,
         am: parseFloat(formData.am)
       };
 
-      const response = await axios.post<QRResponse>('/qr-platba', payload);
-      setQrCode(response.data.qrCode);
-    } catch (err) {
-      console.log(err);
-      if (axios.isAxiosError(err) && err.response) {
-        // Check if the response contains field-specific errors
-        if (typeof err.response.data === 'object' && err.response.data !== null) {
-          setErrors(err.response.data);
-        } else {
-          setGeneralError(err.response.data || 'An error occurred');
-        }
-      } else {
-        setGeneralError('An unexpected error occurred');
+      // Validate the request data locally
+      const validationErrors = validateQRPlatbaRequest(payload);
+
+      // If there are any validation errors, display them
+      if (validationErrors) {
+        setErrors(validationErrors);
+        return;
       }
+
+      // Generate QR code string
+      const qrString = generateQRString(payload);
+
+      // Generate QR code as data URL directly
+      const qrCodeDataURL = await QRCode.toDataURL(qrString);
+
+      // Set the QR code
+      setQrCode(qrCodeDataURL);
+    } catch (err) {
       console.error('Error generating QR code:', err);
+      setGeneralError('An unexpected error occurred while generating the QR code');
     } finally {
       setLoading(false);
     }
