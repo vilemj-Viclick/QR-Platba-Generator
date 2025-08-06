@@ -114,6 +114,7 @@ export const QRForm: React.FC = () => {
               value={formData.acc}
               onChange={handleChange}
               placeholder="Formát: (000000-)000000000000/0000"
+              maxLength={25}
               className={errors.acc ? 'input-error' : ''}
             />
             <small>Formát: 000000-000000000000/0000</small>
@@ -147,6 +148,7 @@ export const QRForm: React.FC = () => {
               placeholder="Částka"
               step="0.01"
               min="0.01"
+              max="99999999999999999999.99"
               className={errors.am ? 'input-error' : ''}
             />
             {errors.am && <div className="field-error">{errors.am.msg}</div>}
@@ -178,6 +180,7 @@ export const QRForm: React.FC = () => {
               value={formData.vs}
               onChange={handleChange}
               placeholder="Max 10 číslic"
+              maxLength={10}
               className={errors.vs ? 'input-error' : ''}
             />
             {errors.vs && <div className="field-error">{errors.vs.msg}</div>}
@@ -192,6 +195,7 @@ export const QRForm: React.FC = () => {
               value={formData.ss}
               onChange={handleChange}
               placeholder="Max 10 číslic"
+              maxLength={10}
               className={errors.ss ? 'input-error' : ''}
             />
             {errors.ss && <div className="field-error">{errors.ss.msg}</div>}
@@ -206,6 +210,7 @@ export const QRForm: React.FC = () => {
               value={formData.ks}
               onChange={handleChange}
               placeholder="Max 4 číslice"
+              maxLength={4}
               className={errors.ks ? 'input-error' : ''}
             />
             {errors.ks && <div className="field-error">{errors.ks.msg}</div>}
