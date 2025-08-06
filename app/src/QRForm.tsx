@@ -33,7 +33,15 @@ export const QRForm: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const {name, value} = e.target;
-    setFormData(prev => ({...prev, [name]: value}));
+    
+    // Special handling for date field
+    if (name === 'dt' && value) {
+      // Convert from YYYY-MM-DD to YYYYMMDD
+      const formattedDate = value.replace(/-/g, '');
+      setFormData(prev => ({...prev, [name]: formattedDate}));
+    } else {
+      setFormData(prev => ({...prev, [name]: value}));
+    }
 
     // Clear error for this field when user starts typing
     if (errors[name]) {
@@ -196,15 +204,14 @@ export const QRForm: React.FC = () => {
           <div className="form-group">
             <label htmlFor="dt">Datum splatnosti</label>
             <input
-              type="text"
+              type="date"
               id="dt"
               name="dt"
-              value={formData.dt}
+              value={formData.dt ? `${formData.dt.substring(0, 4)}-${formData.dt.substring(4, 6)}-${formData.dt.substring(6, 8)}` : ''}
               onChange={handleChange}
-              placeholder="Formát: RRRRMMDD"
               className={errors.dt ? 'input-error' : ''}
             />
-            <small>Formát: RRRRMMDD</small>
+            <small>Vyberte datum splatnosti</small>
             {errors.dt && <div className="field-error">{errors.dt.msg}</div>}
           </div>
 
