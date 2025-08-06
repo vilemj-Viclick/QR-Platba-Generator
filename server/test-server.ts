@@ -2,27 +2,27 @@ import * as http from 'http';
 
 // Define interfaces for type safety
 interface QRPlatbaRequest {
-    acc?: string;
-    rec?: string;
-    am?: number;
-    cc?: string;
-    vs?: string;
-    ss?: string;
-    ks?: string;
-    dt?: string;
-    msg?: string;
+  acc?: string;
+  rec?: string;
+  am?: number;
+  cc?: string;
+  vs?: string;
+  ss?: string;
+  ks?: string;
+  dt?: string;
+  msg?: string;
 }
 
 interface QRPlatbaResponse {
-    qrCode?: string;
-    qrString?: string;
-    error?: string;
+  qrCode?: string;
+  qrString?: string;
+  error?: string;
 }
 
 interface TestResponse {
-    statusCode: number;
-    headers: http.IncomingHttpHeaders;
-    body: string;
+  statusCode: number;
+  headers: http.IncomingHttpHeaders;
+  body: string;
 }
 
 // Function to make a POST request to the server

@@ -1,14 +1,14 @@
-import { describe, it, expect } from 'vitest';
-import { 
-    convertToIBAN, 
-    generateQRString, 
-    validateQRPlatbaRequest,
-    isValidAccountNumber,
-    isValidAmount,
-    isValidCurrency,
-    isValidDate,
-    isValidDigitString,
-    QRPlatbaRequest
+import {describe, expect, it} from 'vitest';
+import {
+  convertToIBAN,
+  generateQRString,
+  isValidAccountNumber,
+  isValidAmount,
+  isValidCurrency,
+  isValidDate,
+  isValidDigitString,
+  QRPlatbaRequest,
+  validateQRPlatbaRequest
 } from '../src/index';
 
 describe('convertToIBAN', () => {
@@ -100,15 +100,15 @@ describe('generateQRString', () => {
       am: 100.50,
       cc: 'CZK'
     };
-    
+
     const result = generateQRString(data);
-    
+
     // Check format and mandatory fields
     expect(result.startsWith('SPD*1.0*')).toBe(true);
     expect(result).toContain('ACC:CZ7508000000000123456789');
     expect(result).toContain('AM:100.50');
     expect(result).toContain('CC:CZK');
-    
+
     // Should not contain optional fields
     expect(result).not.toContain('VS:');
     expect(result).not.toContain('SS:');
@@ -117,7 +117,7 @@ describe('generateQRString', () => {
     expect(result).not.toContain('MSG:');
     expect(result).not.toContain('RN:');
   });
-  
+
   it('should generate a valid QR string with all fields', () => {
     const data: QRPlatbaRequest = {
       acc: '123456789/0800',
@@ -130,9 +130,9 @@ describe('generateQRString', () => {
       msg: 'Payment for services',
       rec: 'John Doe'
     };
-    
+
     const result = generateQRString(data);
-    
+
     // Check format and all fields
     expect(result.startsWith('SPD*1.0*')).toBe(true);
     expect(result).toContain('ACC:CZ7508000000000123456789');
@@ -145,25 +145,25 @@ describe('generateQRString', () => {
     expect(result).toContain('MSG:Payment for services');
     expect(result).toContain('RN:John Doe');
   });
-  
+
   it('should format amount with two decimal places', () => {
     const data: QRPlatbaRequest = {
       acc: '123456789/0800',
       am: 100,
       cc: 'CZK'
     };
-    
+
     const result = generateQRString(data);
     expect(result).toContain('AM:100.00');
   });
-  
+
   it('should handle account number with prefix', () => {
     const data: QRPlatbaRequest = {
       acc: '19-2000145399/0800',
       am: 100,
       cc: 'CZK'
     };
-    
+
     const result = generateQRString(data);
     expect(result).toContain('ACC:CZ6508000000192000145399');
   });
@@ -176,11 +176,11 @@ describe('validateQRPlatbaRequest', () => {
       am: 100.50,
       cc: 'CZK'
     };
-    
+
     const result = validateQRPlatbaRequest(data);
     expect(result).toBeNull();
   });
-  
+
   it('should return null for valid request with all fields', () => {
     const data: QRPlatbaRequest = {
       acc: '123456789/0800',
@@ -193,21 +193,21 @@ describe('validateQRPlatbaRequest', () => {
       msg: 'Payment for services',
       rec: 'John Doe'
     };
-    
+
     const result = validateQRPlatbaRequest(data);
     expect(result).toBeNull();
   });
-  
+
   it('should return errors for missing mandatory fields', () => {
     const data = {} as QRPlatbaRequest;
-    
+
     const result = validateQRPlatbaRequest(data);
     expect(result).not.toBeNull();
     expect(result?.acc).toBeDefined();
     expect(result?.am).toBeDefined();
     expect(result?.cc).toBeDefined();
   });
-  
+
   it('should return errors for invalid fields', () => {
     const data: QRPlatbaRequest = {
       acc: 'invalid',
@@ -218,7 +218,7 @@ describe('validateQRPlatbaRequest', () => {
       ks: '12345',
       dt: '2025-08-06'
     };
-    
+
     const result = validateQRPlatbaRequest(data);
     expect(result).not.toBeNull();
     expect(result?.acc).toBeDefined();
@@ -238,14 +238,14 @@ describe('Validation functions', () => {
       expect(isValidAccountNumber('19-2000145399/0800')).toBe(true);
       expect(isValidAccountNumber('1/0800')).toBe(true);
     });
-    
+
     it('should return false for invalid account numbers', () => {
       expect(isValidAccountNumber('invalid')).toBe(false);
       expect(isValidAccountNumber('123456789/123')).toBe(false);
       expect(isValidAccountNumber('123456-123456789')).toBe(false);
     });
   });
-  
+
   describe('isValidDigitString', () => {
     it('should return true for valid digit strings', () => {
       expect(isValidDigitString('1234', 4)).toBe(true);
@@ -253,14 +253,14 @@ describe('Validation functions', () => {
       expect(isValidDigitString('1234567890', 10)).toBe(true);
       expect(isValidDigitString(undefined, 10)).toBe(true);
     });
-    
+
     it('should return false for invalid digit strings', () => {
       expect(isValidDigitString('12345', 4)).toBe(false);
       expect(isValidDigitString('abc', 10)).toBe(false);
       expect(isValidDigitString('12345678901', 10)).toBe(false);
     });
   });
-  
+
   describe('isValidDate', () => {
     it('should return true for valid dates', () => {
       expect(isValidDate('20250806')).toBe(true);
@@ -268,7 +268,7 @@ describe('Validation functions', () => {
       expect(isValidDate('20250101')).toBe(true);
       expect(isValidDate(undefined)).toBe(true);
     });
-    
+
     it('should return false for invalid dates', () => {
       expect(isValidDate('2025-08-06')).toBe(false);
       expect(isValidDate('20250832')).toBe(false);
@@ -276,28 +276,28 @@ describe('Validation functions', () => {
       expect(isValidDate('abcdefgh')).toBe(false);
     });
   });
-  
+
   describe('isValidAmount', () => {
     it('should return true for valid amounts', () => {
       expect(isValidAmount(100)).toBe(true);
       expect(isValidAmount(0.01)).toBe(true);
       expect(isValidAmount(999999.99)).toBe(true);
     });
-    
+
     it('should return false for invalid amounts', () => {
       expect(isValidAmount(0)).toBe(false);
       expect(isValidAmount(-100)).toBe(false);
       expect(isValidAmount(undefined)).toBe(false);
     });
   });
-  
+
   describe('isValidCurrency', () => {
     it('should return true for valid currencies', () => {
       expect(isValidCurrency('CZK')).toBe(true);
       expect(isValidCurrency('EUR')).toBe(true);
       expect(isValidCurrency('USD')).toBe(true);
     });
-    
+
     it('should return false for invalid currencies', () => {
       expect(isValidCurrency('INVALID')).toBe(false);
       expect(isValidCurrency('czk')).toBe(false);

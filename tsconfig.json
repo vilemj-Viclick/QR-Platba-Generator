@@ -12,6 +12,12 @@
     "moduleResolution": "node",
     "sourceMap": true
   },
-  "include": ["server/**/*"],
-  "exclude": ["node_modules", "dist", "app/**/*"]
+  "include": [
+    "server/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "app/**/*"
+  ]
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { QRForm } from './QRForm';
+import {QRForm} from './QRForm';
 
 export const App: React.FC = () => {
   return (
@@ -8,7 +8,7 @@ export const App: React.FC = () => {
         <h1>QR Platba Generator</h1>
       </header>
       <main>
-        <QRForm />
+        <QRForm/>
       </main>
       <footer>
         <p>QR code generator for Czech payment system</p>

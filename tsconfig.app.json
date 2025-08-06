@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "node",
@@ -14,6 +18,11 @@
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true
   },
-  "include": ["app/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "app/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

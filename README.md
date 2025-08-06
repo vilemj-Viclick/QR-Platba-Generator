@@ -1,6 +1,7 @@
 # QR Platba Generator
 
-A TypeScript-based Node.js server that generates QR codes for the Czech payment system according to the [QR Platba specification](https://qr-platba.cz/pro-vyvojare/specifikace-formatu/).
+A TypeScript-based Node.js server that generates QR codes for the Czech payment system according to
+the [QR Platba specification](https://qr-platba.cz/pro-vyvojare/specifikace-formatu/).
 
 ## Installation
 
@@ -20,6 +21,7 @@ A TypeScript-based Node.js server that generates QR codes for the Czech payment 
    ```
 
 Alternatively, you can run the server in development mode without building:
+
 ```
 npm run dev
 ```
@@ -34,17 +36,17 @@ The server will run on port 3000 by default. You can change the port by setting 
 
 **Request Body:**
 
-| Field | Type | Description | Required | Format |
-|-------|------|-------------|----------|--------|
-| acc | string | Account number | Yes | "000000-000000000000/0000" |
-| rec | string | Recipient's name | No | Any text |
-| am | number | Amount | Yes | Positive number |
-| cc | string | Currency | Yes | "CZK", "EUR", "USD" |
-| vs | string | Variable symbol | No | Max 10 digits |
-| ss | string | Specific symbol | No | Max 10 digits |
-| ks | string | Constant symbol | No | Max 4 digits |
-| dt | string | Date | No | YYYYMMDD |
-| msg | string | Message | No | Any text |
+| Field | Type   | Description      | Required | Format                     |
+|-------|--------|------------------|----------|----------------------------|
+| acc   | string | Account number   | Yes      | "000000-000000000000/0000" |
+| rec   | string | Recipient's name | No       | Any text                   |
+| am    | number | Amount           | Yes      | Positive number            |
+| cc    | string | Currency         | Yes      | "CZK", "EUR", "USD"        |
+| vs    | string | Variable symbol  | No       | Max 10 digits              |
+| ss    | string | Specific symbol  | No       | Max 10 digits              |
+| ks    | string | Constant symbol  | No       | Max 4 digits               |
+| dt    | string | Date             | No       | YYYYMMDD                   |
+| msg   | string | Message          | No       | Any text                   |
 
 **Example Request:**
 
@@ -109,6 +111,7 @@ SPD*1.0*ACC:account_number*AM:amount*CC:currency*[optional_fields]
 ```
 
 Optional fields include:
+
 - VS: Variable symbol
 - SS: Specific symbol
 - KS: Constant symbol
@@ -118,7 +121,8 @@ Optional fields include:
 
 ## TypeScript Implementation
 
-This project is implemented in TypeScript, providing type safety and better code organization. The TypeScript code is located in the `src` directory and is compiled to JavaScript in the `dist` directory.
+This project is implemented in TypeScript, providing type safety and better code organization. The TypeScript code is
+located in the `src` directory and is compiled to JavaScript in the `dist` directory.
 
 ### Project Structure
 

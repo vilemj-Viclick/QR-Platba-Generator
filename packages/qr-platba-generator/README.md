@@ -13,7 +13,7 @@ npm install qr-platba-generator
 ### Basic Usage
 
 ```typescript
-import { generateQRString, QRPlatbaRequest } from 'qr-platba-generator';
+import {generateQRString, QRPlatbaRequest} from 'qr-platba-generator';
 import QRCode from 'qrcode';
 
 // Create a payment request
@@ -50,7 +50,7 @@ QRCode.toDataURL(qrString, (err, url) => {
 The library includes validation functions to ensure the payment data is valid:
 
 ```typescript
-import { validateQRPlatbaRequest, QRPlatbaRequest } from 'qr-platba-generator';
+import {validateQRPlatbaRequest, QRPlatbaRequest} from 'qr-platba-generator';
 
 const paymentData: QRPlatbaRequest = {
   acc: '123456789/0800',
@@ -71,9 +71,9 @@ if (validationErrors) {
 You can also use the individual validation functions:
 
 ```typescript
-import { 
-  isValidAccountNumber, 
-  isValidAmount, 
+import {
+  isValidAccountNumber,
+  isValidAmount,
   isValidCurrency,
   isValidDigitString,
   isValidDate
@@ -105,7 +105,7 @@ console.log(isValidDate('2025-08-06')); // false
 The library can convert Czech account numbers to IBAN format:
 
 ```typescript
-import { convertToIBAN } from 'qr-platba-generator';
+import {convertToIBAN} from 'qr-platba-generator';
 
 // Convert account number to IBAN
 console.log(convertToIBAN('123456789/0800')); // CZ7508000000000123456789
@@ -120,15 +120,15 @@ console.log(convertToIBAN('19-2000145399/0800')); // CZ6508000000192000145399
 
 ```typescript
 interface QRPlatbaRequest {
-    acc: string;    // Account number (mandatory)
-    rec?: string;   // Recipient name (optional)
-    am: number;     // Amount (mandatory)
-    cc: string;     // Currency code (mandatory)
-    vs?: string;    // Variable symbol (optional)
-    ss?: string;    // Specific symbol (optional)
-    ks?: string;    // Constant symbol (optional)
-    dt?: string;    // Due date (optional)
-    msg?: string;   // Message (optional)
+  acc: string;    // Account number (mandatory)
+  rec?: string;   // Recipient name (optional)
+  am: number;     // Amount (mandatory)
+  cc: string;     // Currency code (mandatory)
+  vs?: string;    // Variable symbol (optional)
+  ss?: string;    // Specific symbol (optional)
+  ks?: string;    // Constant symbol (optional)
+  dt?: string;    // Due date (optional)
+  msg?: string;   // Message (optional)
 }
 ```
 
