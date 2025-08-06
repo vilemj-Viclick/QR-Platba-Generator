@@ -8,7 +8,10 @@ type FormData = {
 
 // Interface for field-specific errors
 interface FieldErrors {
-  [key: string]: string;
+  readonly [key: string]: {
+    readonly msg: string;
+    readonly code: string;
+  };
 }
 
 export const QRForm: React.FC = () => {
@@ -27,7 +30,6 @@ export const QRForm: React.FC = () => {
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [generalError, setGeneralError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const {name, value} = e.target;
@@ -48,7 +50,6 @@ export const QRForm: React.FC = () => {
     setErrors({});
     setGeneralError(null);
     setQrCode(null);
-    setLoading(true);
 
     try {
       // Convert amount to number
@@ -76,69 +77,65 @@ export const QRForm: React.FC = () => {
       setQrCode(qrCodeDataURL);
     } catch (err) {
       console.error('Error generating QR code:', err);
-      setGeneralError('An unexpected error occurred while generating the QR code');
-    } finally {
-      setLoading(false);
+      setGeneralError('Při generování QR kódu došlo k neočekávané chybě');
     }
   };
 
   return (
     <div className="qr-form-container">
       <div className="qr-form-wrapper">
-        <h2>Generate QR Payment Code</h2>
+        <h2>Generovat QR platební kód</h2>
 
         {generalError && <div className="error-message">{generalError}</div>}
 
         <form onSubmit={handleSubmit} className="form">
           <div className="form-group">
-            <label htmlFor="acc">Account Number (required)</label>
+            <label htmlFor="acc">Číslo účtu (povinné)</label>
             <input
               type="text"
               id="acc"
               name="acc"
               value={formData.acc}
               onChange={handleChange}
-              placeholder="Format: (000000-)000000000000/0000"
-              required
+              placeholder="Formát: (000000-)000000000000/0000"
               className={errors.acc ? 'input-error' : ''}
             />
-            <small>Format: 000000-000000000000/0000</small>
-            {errors.acc && <div className="field-error">{errors.acc}</div>}
+            <small>Formát: 000000-000000000000/0000</small>
+            {errors.acc && <div className="field-error">{errors.acc.msg}</div>}
           </div>
 
           <div className="form-group">
-            <label htmlFor="rec">Recipient Name</label>
+            <label htmlFor="rec">Jméno příjemce</label>
             <input
               type="text"
               id="rec"
               name="rec"
               value={formData.rec}
               onChange={handleChange}
-              placeholder="Recipient name"
+              placeholder="Jméno příjemce"
               className={errors.rec ? 'input-error' : ''}
             />
-            {errors.rec && <div className="field-error">{errors.rec}</div>}
+            {errors.rec && <div className="field-error">{errors.rec.msg}</div>}
           </div>
 
           <div className="form-group">
-            <label htmlFor="am">Amount (required)</label>
+            <label htmlFor="am">Částka (povinná)</label>
             <input
               type="number"
               id="am"
               name="am"
               value={formData.am}
               onChange={handleChange}
-              placeholder="Amount"
+              placeholder="Částka"
               step="0.01"
               min="0.01"
-              required
               className={errors.am ? 'input-error' : ''}
             />
-            {errors.am && <div className="field-error">{errors.am}</div>}
+            {errors.am && <div className="field-error">{errors.am.msg}</div>}
           </div>
 
           <div className="form-group">
-            <label htmlFor="cc">Currency (required)</label>
+            <label htmlFor="cc">Měna (povinná)</label>
             <select
               id="cc"
               name="cc"
@@ -151,86 +148,82 @@ export const QRForm: React.FC = () => {
               <option value="EUR">EUR</option>
               <option value="USD">USD</option>
             </select>
-            {errors.cc && <div className="field-error">{errors.cc}</div>}
+            {errors.cc && <div className="field-error">{errors.cc.msg}</div>}
           </div>
 
           <div className="form-group">
-            <label htmlFor="vs">Variable Symbol</label>
+            <label htmlFor="vs">Variabilní symbol</label>
             <input
               type="text"
               id="vs"
               name="vs"
               value={formData.vs}
               onChange={handleChange}
-              placeholder="Max 10 digits"
-              pattern="\d{0,10}"
+              placeholder="Max 10 číslic"
               className={errors.vs ? 'input-error' : ''}
             />
-            {errors.vs && <div className="field-error">{errors.vs}</div>}
+            {errors.vs && <div className="field-error">{errors.vs.msg}</div>}
           </div>
 
           <div className="form-group">
-            <label htmlFor="ss">Specific Symbol</label>
+            <label htmlFor="ss">Specifický symbol</label>
             <input
               type="text"
               id="ss"
               name="ss"
               value={formData.ss}
               onChange={handleChange}
-              placeholder="Max 10 digits"
-              pattern="\d{0,10}"
+              placeholder="Max 10 číslic"
               className={errors.ss ? 'input-error' : ''}
             />
-            {errors.ss && <div className="field-error">{errors.ss}</div>}
+            {errors.ss && <div className="field-error">{errors.ss.msg}</div>}
           </div>
 
           <div className="form-group">
-            <label htmlFor="ks">Constant Symbol</label>
+            <label htmlFor="ks">Konstantní symbol</label>
             <input
               type="text"
               id="ks"
               name="ks"
               value={formData.ks}
               onChange={handleChange}
-              placeholder="Max 4 digits"
-              pattern="\d{0,4}"
+              placeholder="Max 4 číslice"
               className={errors.ks ? 'input-error' : ''}
             />
-            {errors.ks && <div className="field-error">{errors.ks}</div>}
+            {errors.ks && <div className="field-error">{errors.ks.msg}</div>}
           </div>
 
           <div className="form-group">
-            <label htmlFor="dt">Due Date</label>
+            <label htmlFor="dt">Datum splatnosti</label>
             <input
               type="text"
               id="dt"
               name="dt"
               value={formData.dt}
               onChange={handleChange}
-              placeholder="Format: YYYYMMDD"
-              pattern="\d{8}"
+              placeholder="Formát: RRRRMMDD"
               className={errors.dt ? 'input-error' : ''}
             />
-            <small>Format: YYYYMMDD</small>
-            {errors.dt && <div className="field-error">{errors.dt}</div>}
+            <small>Formát: RRRRMMDD</small>
+            {errors.dt && <div className="field-error">{errors.dt.msg}</div>}
           </div>
 
           <div className="form-group">
-            <label htmlFor="msg">Message</label>
+            <label htmlFor="msg">Zpráva</label>
             <input
               type="text"
               id="msg"
               name="msg"
               value={formData.msg}
               onChange={handleChange}
-              placeholder="Payment message"
+              placeholder="Platební zpráva"
               className={errors.msg ? 'input-error' : ''}
             />
-            {errors.msg && <div className="field-error">{errors.msg}</div>}
+            {errors.msg && <div className="field-error">{errors.msg.msg}</div>}
           </div>
 
-          <button type="submit" disabled={loading}>
-            {loading ? 'Generating...' : 'Generate QR Code'}
+          <button type="submit">
+            Generovat QR kód
           </button>
         </form>
       </div>
@@ -238,13 +231,13 @@ export const QRForm: React.FC = () => {
       <div className="qr-code-container">
         {qrCode ? (
           <div className="qr-result">
-            <h3>Your QR Code</h3>
-            <img src={qrCode} alt="QR Payment Code"/>
-            <p>Scan this QR code with your banking app to make the payment.</p>
+            <h3>Váš QR kód</h3>
+            <img src={qrCode} alt="QR platební kód"/>
+            <p>Naskenujte tento QR kód pomocí vaší bankovní aplikace pro provedení platby.</p>
           </div>
         ) : (
           <div className="qr-code-placeholder">
-            <p className="qr-code-placeholder-text">QR code will appear here</p>
+            <p className="qr-code-placeholder-text">QR kód se zobrazí zde</p>
           </div>
         )}
       </div>

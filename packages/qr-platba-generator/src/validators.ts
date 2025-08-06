@@ -1,5 +1,11 @@
 // Import the QRPlatbaRequest interface
-import { QRPlatbaRequest } from './types';
+import {QRPlatbaRequest} from './types';
+
+const isNonEmptyString = (str: string | undefined | null): boolean =>
+  (str !== undefined) && (str !== null) && str.trim() !== '';
+
+const isFiniteNumber = (num: number | undefined | null): boolean =>
+  (typeof num === 'number') && !isNaN(num) && isFinite(num);
 
 /**
  * Validates if the account number is in the correct format.
@@ -66,53 +72,88 @@ function isValidCurrency(currency: string): boolean {
   return validCurrencies.includes(currency);
 }
 
+type ErrorReport = {
+  readonly msg: string;
+  readonly code: string
+};
+
 /**
  * Validates the QR payment request data.
  * @param data QR payment request data
  * @returns Object with validation errors or null if valid
  */
-export function validateQRPlatbaRequest(data: QRPlatbaRequest): Partial<Record<keyof QRPlatbaRequest, string>> | null {
-  const errors: Partial<Record<keyof QRPlatbaRequest, string>> = {};
+export function validateQRPlatbaRequest(data: QRPlatbaRequest): Partial<Record<keyof QRPlatbaRequest, ErrorReport>> | null {
+  const errors: Partial<Record<keyof QRPlatbaRequest, { msg: string; code: string }>> = {};
 
   // Validate mandatory fields
   if (!data.acc) {
-    errors.acc = 'Account number is required';
+    errors.acc = {
+      msg: 'Číslo účtu je povinné',
+      code: 'required'
+    };
   } else if (!isValidAccountNumber(data.acc)) {
-    errors.acc = 'Invalid account number format. Expected format: 000000-000000000000/0000';
+    errors.acc = {
+      msg: 'Neplatný formát čísla účtu. Očekávaný formát: 000000-000000000000/0000',
+      code: 'format'
+    };
   }
 
-  if (data.am === undefined) {
-    errors.am = 'Amount is required';
+  if (!isFiniteNumber(data.am)) {
+    errors.am = {
+      msg: 'Částka je povinná',
+      code: 'required'
+    };
   } else if (!isValidAmount(data.am)) {
-    errors.am = 'Invalid amount. Must be a positive number';
+    errors.am = {
+      msg: 'Neplatná částka. Musí být kladné číslo',
+      code: 'format'
+    };
   }
 
   if (!data.cc) {
-    errors.cc = 'Currency is required';
+    errors.cc = {
+      msg: 'Měna je povinná',
+      code: 'required'
+    };
   } else if (!isValidCurrency(data.cc)) {
-    errors.cc = 'Invalid currency code';
+    errors.cc = {
+      msg: 'Neplatný kód měny',
+      code: 'format'
+    };
   }
 
   // Validate optional fields
   if (data.vs && !isValidDigitString(data.vs, 10)) {
-    errors.vs = 'Invalid variable symbol. Must be a string of digits, max 10 characters';
+    errors.vs = {
+      msg: 'Neplatný variabilní symbol. Musí obsahovat pouze číslice, maximálně 10 znaků',
+      code: 'format'
+    };
   }
 
   if (data.ss && !isValidDigitString(data.ss, 10)) {
-    errors.ss = 'Invalid specific symbol. Must be a string of digits, max 10 characters';
+    errors.ss = {
+      msg: 'Neplatný specifický symbol. Musí obsahovat pouze číslice, maximálně 10 znaků',
+      code: 'format'
+    };
   }
 
   if (data.ks && !isValidDigitString(data.ks, 4)) {
-    errors.ks = 'Invalid constant symbol. Must be a string of digits, max 4 characters';
+    errors.ks = {
+      msg: 'Neplatný konstantní symbol. Musí obsahovat pouze číslice, maximálně 4 znaky',
+      code: 'format'
+    };
   }
 
   if (data.dt && !isValidDate(data.dt)) {
-    errors.dt = 'Invalid date format. Expected format: YYYYMMDD';
+    errors.dt = {
+      msg: 'Neplatný formát data. Očekávaný formát: RRRRMMDD',
+      code: 'format'
+    };
   }
 
   // If there are any validation errors, return them
   if (Object.keys(errors).length > 0) {
-    return errors as Record<string, string>;
+    return errors as Record<string, { msg: string; code: string }>;
   }
 
   return null;
