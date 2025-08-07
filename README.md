@@ -1,6 +1,7 @@
 # QR Platba Generator
 
 [![Tests](https://github.com/vilemj-Viclick/QR-Platba-Generator/actions/workflows/tests.yml/badge.svg)](https://github.com/vilemj-Viclick/QR-Platba-Generator/actions/workflows/tests.yml)
+[![npm version](https://img.shields.io/npm/v/qr-platba-generator.svg)](https://www.npmjs.com/package/qr-platba-generator)
 
 A TypeScript-based Node.js server that generates QR codes for the Czech payment system according to
 the [QR Platba specification](https://qr-platba.cz/pro-vyvojare/specifikace-formatu/).
