@@ -13,6 +13,7 @@ interface FieldErrors {
 document.addEventListener('DOMContentLoaded', () => {
   initQRFormHandlers();
   initSmoothScrolling();
+  initSupportButton();
 });
 
 function isElementInViewport(el: Element) {
@@ -190,5 +191,23 @@ function initQRFormHandlers() {
         inputElement.classList.add('input-error');
       }
     }
+  }
+}
+
+/**
+ * Initialize the support button functionality
+ */
+function initSupportButton() {
+  const supportButton = document.getElementById('support-button');
+  const supportQR = document.getElementById('support-qr');
+  
+  if (supportButton && supportQR) {
+    supportButton.addEventListener('click', function() {
+      supportQR.classList.toggle('hidden');
+      if(!supportQR.classList.contains('hidden')){
+        supportQR.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'center'});
+      }
+      supportButton.textContent = supportQR.classList.contains('hidden') ? 'Podpořit' : 'Skrýt';
+    });
   }
 }

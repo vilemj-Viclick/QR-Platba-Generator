@@ -273,6 +273,29 @@
       .info-link:hover {
           transform: scale(1.2);
       }
+      
+      /* Support section styles */
+      .footer-content {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 20px;
+      }
+      
+      .support-button {
+          max-width: 200px;
+          margin-top: 0;
+      }
+      
+      .support-qr-container {
+          text-align: center;
+          margin-top: 20px;
+      }
+      
+      .support-qr-image {
+          max-width: 200px;
+          height: auto;
+      }
 
   </style>
 </head>
@@ -442,7 +465,19 @@
     </div>
   </section>
   <footer>
-    <p>Generátor QR kódů pro český platební systém</p>
+    <div class="footer-content">
+      <p>Generátor QR kódů pro český platební systém</p>
+      
+      <button id="support-button" class="support-button">
+        Podpořit
+      </button>
+      
+      <div id="support-qr" class="hidden support-qr-container">
+        <h3>Děkujeme za podporu!</h3>
+        <img src="/qr-platba.png" alt="QR kód pro podporu" class="support-qr-image"/>
+        <p>Naskenujte tento QR kód pomocí vaší bankovní aplikace pro zaslání podpory.</p>
+      </div>
+    </div>
   </footer>
 </div>
 <!-- Vite entry point -->
