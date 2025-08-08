@@ -3,41 +3,30 @@
 [![Tests](https://github.com/vilemj-Viclick/QR-Platba-Generator/actions/workflows/tests.yml/badge.svg)](https://github.com/vilemj-Viclick/QR-Platba-Generator/actions/workflows/tests.yml)
 [![npm version](https://img.shields.io/npm/v/qr-platba-generator.svg)](https://www.npmjs.com/package/qr-platba-generator)
 
-A TypeScript-based Node.js server that generates QR codes for the Czech payment system according to
+A TypeScript-based Node.js server and library that generates QR codes for the Czech payment system according to
 the [QR Platba specification](https://qr-platba.cz/pro-vyvojare/specifikace-formatu/).
 
-## Installation
+## Inspiration
+This whole thing was inspired by [https://qr-platba.cz/](https://qr-platba.cz/), actually.
+I just wanted to be able to generate QR platba codes with the recipient's name in them.
+And the form hosted at [https://qr-platba.cz/generator/](https://qr-platba.cz/generator/) does not allow that.
 
-1. Clone the repository
-2. Install dependencies:
-   ```
-   npm install
-   ```
-   This step is crucial as it installs TypeScript and other required packages.
-3. Build the TypeScript code:
-   ```
-   npm run build
-   ```
-4. Start the server:
-   ```
-   npm start
-   ```
-
-Alternatively, you can run the server in development mode without building:
-
-```
-npm run dev
-```
-
-The server will run on port 3000 by default. You can change the port by setting the `PORT` environment variable.
+## NPM package
+For more information about the npm package, see the [npm page](https://www.npmjs.com/package/qr-platba-generator).
 
 ## API Documentation
+I host a form as well as an API which allows you to generate QR codes. 
+Form is available here: [https://qr-platba.jenis.cz](https://qr-platba.jenis.cz)
+
+API endpoints are described below:
 
 ### Generate QR Code
 
 **Endpoint:** `POST /qr-platba`
 
 **Request Body:**
+
+Send a JSON object with the following fields:
 
 | Field | Type   | Description      | Required | Format                     |
 |-------|--------|------------------|----------|----------------------------|
@@ -80,34 +69,24 @@ The server will run on port 3000 by default. You can change the port by setting 
 
 ```json
 {
-  "error": "Error message describing what went wrong"
+  "acc": {
+    "msg": "Číslo účtu je povinné",
+    "code": "required"
+  },
+  "am": {
+    "msg": "Částka je povinná",
+    "code": "required"
+  },
+  "cc": {
+    "msg": "Měna je povinná",
+    "code": "required"
+  }
 }
 ```
 
-## Testing
-
-A test script is included to verify the functionality of the API. To run the tests:
-
-1. Start the server in one terminal:
-   ```
-   npm start
-   ```
-
-   Or in development mode:
-   ```
-   npm run dev
-   ```
-
-2. Run the test script in another terminal:
-   ```
-   npm test
-   ```
-
-The tests will run automatically when you execute the test script.
-
 ## QR Code Format
 
-The QR code follows the format specified by QR Platba:
+The QR code follows the format specified by [QR Platba](https://qr-platba.cz/pro-vyvojare/specifikace-formatu/):
 
 ```
 SPD*1.0*ACC:account_number*AM:amount*CC:currency*[optional_fields]
@@ -121,25 +100,6 @@ Optional fields include:
 - DT: Date
 - MSG: Message
 - RN: Recipient's name
-
-## TypeScript Implementation
-
-This project is implemented in TypeScript, providing type safety and better code organization. The TypeScript code is
-located in the `src` directory and is compiled to JavaScript in the `dist` directory.
-
-### Project Structure
-
-- `src/server.ts`: The main server file with Express setup and API endpoints
-- `src/test.ts`: Test script for verifying the API functionality
-- `tsconfig.json`: TypeScript configuration file
-- `package.json`: Project configuration with scripts for building and running
-
-### Available Scripts
-
-- `npm run build`: Compiles TypeScript code to JavaScript in the `dist` directory
-- `npm start`: Runs the compiled JavaScript code
-- `npm run dev`: Runs the TypeScript code directly using ts-node (useful for development)
-- `npm test`: Runs the test script using ts-node
 
 ## License
 
