@@ -12,6 +12,7 @@ interface FieldErrors {
 // Initialize the form when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   initQRFormHandlers();
+  initSmoothScrolling();
 });
 
 function isElementInViewport(el: Element) {
@@ -22,6 +23,51 @@ function isElementInViewport(el: Element) {
     rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
+}
+
+function initSmoothScrolling() {
+  // Find the info link
+  const infoLink = document.querySelector('.info-link');
+  
+  if (infoLink) {
+    infoLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      // Get the target element from the href attribute
+      const href = (e.currentTarget as HTMLAnchorElement).getAttribute('href');
+      if (!href) return;
+      
+      const targetId = href.substring(1); // Remove the # character
+      const targetElement = document.getElementById(targetId);
+      
+      if (targetElement) {
+        // Update the URL with the hash fragment
+        window.history.pushState(null, '', href);
+        
+        // Scroll to the target element smoothly
+        targetElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
+  }
+  
+  // Handle direct navigation to hash on page load
+  if (window.location.hash) {
+    const targetId = window.location.hash.substring(1);
+    const targetElement = document.getElementById(targetId);
+    
+    if (targetElement) {
+      // Use setTimeout to ensure the page is fully loaded
+      setTimeout(() => {
+        targetElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 100);
+    }
+  }
 }
 
 function initQRFormHandlers() {
