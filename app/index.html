@@ -57,17 +57,35 @@
       }
 
       .qr-form-wrapper {
-          width: 600px;
+          width: 100%;
+          max-width: 600px;
       }
 
       .qr-code-container {
-          min-width: 400px;
+          width: 100%;
           max-width: 400px;
-          min-height: 400px;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
+      }
+      
+      /* Media query for mobile devices */
+      @media (max-width: 768px) {
+          .qr-form-container {
+              flex-direction: column;
+              padding: 10px;
+          }
+          
+          .qr-form-wrapper, 
+          .qr-code-container {
+              width: 100%;
+              max-width: 100%;
+          }
+          
+          .qr-code-container {
+              margin-top: 30px;
+          }
       }
 
       .qr-code-placeholder {
@@ -83,6 +101,35 @@
           color: #999;
           text-align: center;
       }
+      
+      .qr-result {
+          margin-top: 30px;
+          text-align: center;
+          width: 100%;
+      }
+
+      .qr-result img {
+          max-width: 100%;
+          height: auto;
+          margin: 20px 0;
+      }
+      
+      /* Media query for QR code on mobile */
+      @media (max-width: 768px) {
+          .qr-code-placeholder {
+              width: 180px;
+              height: 180px;
+          }
+          
+          .qr-result {
+              margin-top: 20px;
+          }
+          
+          .qr-result img {
+              max-width: 80%;
+              margin: 15px 0;
+          }
+      }
 
       .form-group {
           margin-bottom: 15px;
@@ -96,10 +143,29 @@
 
       input, select {
           width: 100%;
-          padding: 8px;
+          padding: 12px;
           border: 1px solid #ddd;
           border-radius: 4px;
           box-sizing: border-box;
+          font-size: 16px; /* Larger font size for better readability on mobile */
+      }
+      
+      /* Specific styling for number inputs */
+      input[type="number"] {
+          -moz-appearance: textfield; /* Firefox */
+      }
+      
+      /* Remove spinner buttons for number inputs in WebKit browsers */
+      input[type="number"]::-webkit-outer-spin-button,
+      input[type="number"]::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+      }
+      
+      /* Improve date input for mobile */
+      input[type="date"] {
+          -webkit-appearance: none; /* Remove default styling in WebKit browsers */
+          appearance: none;
       }
 
       small {
@@ -111,12 +177,32 @@
       button {
           background-color: #4CAF50;
           color: white;
-          padding: 10px 15px;
+          padding: 12px 20px;
           border: none;
           border-radius: 4px;
           cursor: pointer;
           font-size: 16px;
           margin-top: 20px;
+          width: 100%; /* Full width button for easier tapping on mobile */
+          max-width: 300px; /* Limit width on larger screens */
+      }
+      
+      /* Media query for mobile devices */
+      @media (max-width: 768px) {
+          input, select, button {
+              font-size: 16px; /* Prevent zoom on focus in iOS */
+              padding: 15px; /* Larger touch targets */
+          }
+          
+          button {
+              padding: 15px 20px;
+              margin-top: 30px;
+              width: 100%;
+          }
+          
+          .form-group {
+              margin-bottom: 20px; /* More spacing between form groups on mobile */
+          }
       }
 
       button:hover {
@@ -147,16 +233,6 @@
           background-color: #ffebee;
       }
 
-      .qr-result {
-          margin-top: 30px;
-          text-align: center;
-      }
-
-      .qr-result img {
-          max-width: 100%;
-          height: auto;
-          margin: 20px 0;
-      }
   </style>
 </head>
 <body>

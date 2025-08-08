@@ -69,6 +69,7 @@ function initQRFormHandlers() {
       // If there are any validation errors, display them
       if (validationErrors) {
         displayErrors(validationErrors);
+        document.querySelector('.input-error')?.scrollIntoView({behavior: 'smooth'});
         return;
       }
 
@@ -82,6 +83,7 @@ function initQRFormHandlers() {
       qrImage.src = qrCodeDataURL;
       qrPlaceholder.style.display = 'none';
       qrResult.style.display = 'block';
+      qrResult.scrollIntoView({behavior: 'smooth'});
     } catch (err) {
       console.error('Error generating QR code:', err);
       generalErrorElement.textContent = 'Při generování QR kódu došlo k neočekávané chybě';
