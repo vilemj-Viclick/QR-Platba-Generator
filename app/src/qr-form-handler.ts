@@ -14,6 +14,16 @@ document.addEventListener('DOMContentLoaded', () => {
   initQRFormHandlers();
 });
 
+function isElementInViewport(el: Element) {
+  const rect = el.getBoundingClientRect();
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
+}
+
 function initQRFormHandlers() {
   // Get form elements
   const form = document.getElementById('qr-form') as HTMLFormElement;
@@ -69,7 +79,10 @@ function initQRFormHandlers() {
       // If there are any validation errors, display them
       if (validationErrors) {
         displayErrors(validationErrors);
-        document.querySelector('.input-error')?.scrollIntoView({behavior: 'smooth'});
+        const firstError = document.querySelector('.input-error');
+        if(firstError && !isElementInViewport(firstError)){
+          firstError.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'center'});
+        }
         return;
       }
 
@@ -83,7 +96,10 @@ function initQRFormHandlers() {
       qrImage.src = qrCodeDataURL;
       qrPlaceholder.style.display = 'none';
       qrResult.style.display = 'block';
-      qrResult.scrollIntoView({behavior: 'smooth'});
+      const firstError = document.querySelector('.input-error');
+      if(!isElementInViewport(qrResult)){
+        qrResult.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'center'});
+      }
     } catch (err) {
       console.error('Error generating QR code:', err);
       generalErrorElement.textContent = 'Při generování QR kódu došlo k neočekávané chybě';

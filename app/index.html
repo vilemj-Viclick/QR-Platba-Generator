@@ -22,6 +22,28 @@
           padding: 0;
           background-color: #f5f5f5;
       }
+      
+      .hidden {
+          display: none;
+      }
+      
+      .info-section-styling {
+          margin-top: 50px;
+          padding: 20px;
+          border-top: 1px solid #eee;
+          border-bottom: 1px solid #eee;
+          background-color: #f9f9f9;
+      }
+      
+      .centered-heading {
+          text-align: center;
+          margin-bottom: 20px;
+      }
+      
+      .content-container {
+          max-width: 700px;
+          margin: 0 auto;
+      }
 
       .App {
           max-width: 800px;
@@ -245,7 +267,7 @@
     <div class="qr-form-container">
       <div class="qr-form-wrapper">
         <h2>Generovat QR platební kód</h2>
-        <div id="general-error" class="error-message" style="display: none;"></div>
+        <div id="general-error" class="error-message hidden"></div>
         <form id="qr-form" class="form">
           <div class="form-group">
             <label for="acc">Číslo účtu (povinné)</label>
@@ -257,7 +279,7 @@
                 maxlength="25"
             />
             <small>Formát: 000000-000000000000/0000</small>
-            <div id="acc-error" class="field-error" style="display: none;"></div>
+            <div id="acc-error" class="field-error hidden"></div>
           </div>
 
           <div class="form-group">
@@ -270,7 +292,7 @@
                 maxlength="250"
             />
             <small id="rec-chars">Zbývá 250 znaků</small>
-            <div id="rec-error" class="field-error" style="display: none;"></div>
+            <div id="rec-error" class="field-error hidden"></div>
           </div>
 
           <div class="form-group">
@@ -284,7 +306,7 @@
                 min="0.01"
                 max="99999999999999999999.99"
             />
-            <div id="am-error" class="field-error" style="display: none;"></div>
+            <div id="am-error" class="field-error hidden"></div>
           </div>
 
           <div class="form-group">
@@ -298,7 +320,7 @@
               <option value="EUR">EUR</option>
               <option value="USD">USD</option>
             </select>
-            <div id="cc-error" class="field-error" style="display: none;"></div>
+            <div id="cc-error" class="field-error hidden"></div>
           </div>
 
           <div class="form-group">
@@ -310,7 +332,7 @@
                 placeholder="Max 10 číslic"
                 maxlength="10"
             />
-            <div id="vs-error" class="field-error" style="display: none;"></div>
+            <div id="vs-error" class="field-error hidden"></div>
           </div>
 
           <div class="form-group">
@@ -322,7 +344,7 @@
                 placeholder="Max 10 číslic"
                 maxlength="10"
             />
-            <div id="ss-error" class="field-error" style="display: none;"></div>
+            <div id="ss-error" class="field-error hidden"></div>
           </div>
 
           <div class="form-group">
@@ -334,7 +356,7 @@
                 placeholder="Max 4 číslice"
                 maxlength="4"
             />
-            <div id="ks-error" class="field-error" style="display: none;"></div>
+            <div id="ks-error" class="field-error hidden"></div>
           </div>
 
           <div class="form-group">
@@ -345,7 +367,7 @@
                 name="dt"
             />
             <small>Vyberte datum splatnosti</small>
-            <div id="dt-error" class="field-error" style="display: none;"></div>
+            <div id="dt-error" class="field-error hidden"></div>
           </div>
 
           <div class="form-group">
@@ -358,7 +380,7 @@
                 maxlength="250"
             />
             <small id="msg-chars">Zbývá 250 znaků</small>
-            <div id="msg-error" class="field-error" style="display: none;"></div>
+            <div id="msg-error" class="field-error hidden"></div>
           </div>
 
           <button type="submit">
@@ -371,7 +393,7 @@
         <div id="qr-placeholder" class="qr-code-placeholder">
           <p class="qr-code-placeholder-text">QR kód se zobrazí zde</p>
         </div>
-        <div id="qr-result" class="qr-result" style="display: none;">
+        <div id="qr-result" class="qr-result hidden">
           <h3>Váš QR kód</h3>
           <img id="qr-image" src="" alt="QR platební kód"/>
           <p>Naskenujte tento QR kód pomocí vaší bankovní aplikace pro provedení platby.</p>
@@ -379,6 +401,23 @@
       </div>
     </div>
   </main>
+  <section class="info-section info-section-styling">
+    <h2 class="centered-heading">O projektu</h2>
+    
+    <div class="content-container">
+      <h3>Motivace</h3>
+      <p>Tento projekt vznikl z potřeby generovat QR platební kódy s možností zahrnout jméno příjemce. Oficiální generátor na <a href="https://qr-platba.cz/generator/" target="_blank">qr-platba.cz</a> tuto možnost nenabízí.</p>
+      
+      <h3>Inspirace</h3>
+      <p>Projekt byl inspirován webem <a href="https://qr-platba.cz/" target="_blank">qr-platba.cz</a>.</p>
+      
+      <h3>Specifikace</h3>
+      <p>QR kódy jsou generovány podle oficiální <a href="https://qr-platba.cz/pro-vyvojare/specifikace-formatu/" target="_blank">specifikace QR Platba</a>.</p>
+      
+      <h3>Soukromí</h3>
+      <p>Tento generátor funguje <strong>kompletně offline</strong> - všechny operace probíhají přímo ve vašem prohlížeči. Nepoužíváme žádné sledovací nástroje, neukládáme žádná data a nepoužíváme cookies.</p>
+    </div>
+  </section>
   <footer>
     <p>Generátor QR kódů pro český platební systém</p>
   </footer>
