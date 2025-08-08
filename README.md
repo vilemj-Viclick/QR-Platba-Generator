@@ -7,7 +7,7 @@ A TypeScript-based Node.js server and library that generates QR codes for the Cz
 the [QR Platba specification](https://qr-platba.cz/pro-vyvojare/specifikace-formatu/).
 
 ## Inspiration
-This whole thing was inspired by [https://qr-platba.cz/](https://qr-platba.cz/), actually.
+This whole thing was inspired by [https://qr-platba.cz/](https://qr-platba.cz/).
 I just wanted to be able to generate QR platba codes with the recipient's name in them.
 And the form hosted at [https://qr-platba.cz/generator/](https://qr-platba.cz/generator/) does not allow that.
 

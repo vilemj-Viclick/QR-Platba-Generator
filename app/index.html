@@ -1,163 +1,313 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <meta name="theme-color" content="#000000"/>
-    <meta name="description" content="QR code generator for Czech payment system"/>
-    <title>QR Platba Generator</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-            'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-            sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f5f5;
-        }
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="theme-color" content="#000000"/>
+  <meta name="description" content="Generátor QR kódů pro český platební systém"/>
+  <meta name="keywords" content="QR platba, QR kód, platební systém, bankovní převod, Česká republika"/>
+  <meta name="author" content="QR Platba Generator"/>
+  <meta property="og:title" content="QR Platba Generátor"/>
+  <meta property="og:description" content="Generátor QR kódů pro český platební systém"/>
+  <meta property="og:type" content="website"/>
+  <title>QR Platba Generátor</title>
+  <style>
+      body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+          sans-serif;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          margin: 0;
+          padding: 0;
+          background-color: #f5f5f5;
+      }
 
-        .App {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            min-height: 100vh;
-        }
+      .App {
+          max-width: 800px;
+          margin: 0 auto;
+          padding: 20px;
+          background-color: white;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          min-height: 100vh;
+      }
 
-        .App-header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #eee;
-        }
+      .App-header {
+          text-align: center;
+          margin-bottom: 30px;
+          padding-bottom: 20px;
+          border-bottom: 1px solid #eee;
+      }
 
-        footer {
-            margin-top: 50px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            text-align: center;
-            color: #666;
-        }
+      footer {
+          margin-top: 50px;
+          padding-top: 20px;
+          border-top: 1px solid #eee;
+          text-align: center;
+          color: #666;
+      }
 
-        .qr-form-container {
-            padding: 20px;
-            display: flex;
-            flex-direction: row;
-            gap: 2rem;
-            align-items: flex-start;
-            justify-content: center;
-        }
-        
-        .qr-form-wrapper {
-            width: 600px;
-        }
-        
-        .qr-code-container {
-            min-width: 400px;
-            max-width: 400px;
-            min-height: 400px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .qr-code-placeholder {
-            width: 200px;
-            height: 200px;
-            border: 1px dashed #ccc;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .qr-code-placeholder-text {
-            color: #999;
-            text-align: center;
-        }
+      .qr-form-container {
+          padding: 20px;
+          display: flex;
+          flex-direction: row;
+          gap: 2rem;
+          align-items: flex-start;
+          justify-content: center;
+      }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+      .qr-form-wrapper {
+          width: 600px;
+      }
 
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
+      .qr-code-container {
+          min-width: 400px;
+          max-width: 400px;
+          min-height: 400px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+      }
 
-        input, select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
+      .qr-code-placeholder {
+          width: 200px;
+          height: 200px;
+          border: 1px dashed #ccc;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
 
-        small {
-            display: block;
-            color: #666;
-            margin-top: 5px;
-        }
+      .qr-code-placeholder-text {
+          color: #999;
+          text-align: center;
+      }
 
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 20px;
-        }
+      .form-group {
+          margin-bottom: 15px;
+      }
 
-        button:hover {
-            background-color: #45a049;
-        }
+      label {
+          display: block;
+          margin-bottom: 5px;
+          font-weight: bold;
+      }
 
-        button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
+      input, select {
+          width: 100%;
+          padding: 8px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          box-sizing: border-box;
+      }
 
-        .error-message {
-            color: #f44336;
-            padding: 10px;
-            margin-bottom: 20px;
-            background-color: #ffebee;
-            border-radius: 4px;
-        }
+      small {
+          display: block;
+          color: #666;
+          margin-top: 5px;
+      }
 
-        .field-error {
-            color: #f44336;
-            font-size: 0.85em;
-            margin-top: 5px;
-        }
+      button {
+          background-color: #4CAF50;
+          color: white;
+          padding: 10px 15px;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 16px;
+          margin-top: 20px;
+      }
 
-        .input-error {
-            border-color: #f44336 !important;
-            background-color: #ffebee;
-        }
+      button:hover {
+          background-color: #45a049;
+      }
 
-        .qr-result {
-            margin-top: 30px;
-            text-align: center;
-        }
+      button:disabled {
+          background-color: #cccccc;
+          cursor: not-allowed;
+      }
 
-        .qr-result img {
-            max-width: 100%;
-            height: auto;
-            margin: 20px 0;
-        }
-    </style>
+      .error-message {
+          color: #f44336;
+          padding: 10px;
+          margin-bottom: 20px;
+          background-color: #ffebee;
+          border-radius: 4px;
+      }
+
+      .field-error {
+          color: #f44336;
+          font-size: 0.85em;
+          margin-top: 5px;
+      }
+
+      .input-error {
+          border-color: #f44336 !important;
+          background-color: #ffebee;
+      }
+
+      .qr-result {
+          margin-top: 30px;
+          text-align: center;
+      }
+
+      .qr-result img {
+          max-width: 100%;
+          height: auto;
+          margin: 20px 0;
+      }
+  </style>
 </head>
 <body>
-<noscript>You need to enable JavaScript to run this app.</noscript>
-<div id="root"></div>
+<noscript>Pro spuštění této aplikace je potřeba povolit JavaScript.</noscript>
+<div class="App">
+  <header class="App-header">
+    <h1>QR Platba Generator</h1>
+  </header>
+  <main>
+    <div class="qr-form-container">
+      <div class="qr-form-wrapper">
+        <h2>Generovat QR platební kód</h2>
+        <div id="general-error" class="error-message" style="display: none;"></div>
+        <form id="qr-form" class="form">
+          <div class="form-group">
+            <label for="acc">Číslo účtu (povinné)</label>
+            <input
+                type="text"
+                id="acc"
+                name="acc"
+                placeholder="Formát: (000000-)000000000000/0000"
+                maxlength="25"
+            />
+            <small>Formát: 000000-000000000000/0000</small>
+            <div id="acc-error" class="field-error" style="display: none;"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="rec">Jméno příjemce</label>
+            <input
+                type="text"
+                id="rec"
+                name="rec"
+                placeholder="Jméno příjemce (max 250 znaků)"
+                maxlength="250"
+            />
+            <small id="rec-chars">Zbývá 250 znaků</small>
+            <div id="rec-error" class="field-error" style="display: none;"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="am">Částka (povinná)</label>
+            <input
+                type="number"
+                id="am"
+                name="am"
+                placeholder="Částka"
+                step="0.01"
+                min="0.01"
+                max="99999999999999999999.99"
+            />
+            <div id="am-error" class="field-error" style="display: none;"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="cc">Měna (povinná)</label>
+            <select
+                id="cc"
+                name="cc"
+                required
+            >
+              <option value="CZK">CZK</option>
+              <option value="EUR">EUR</option>
+              <option value="USD">USD</option>
+            </select>
+            <div id="cc-error" class="field-error" style="display: none;"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="vs">Variabilní symbol</label>
+            <input
+                type="text"
+                id="vs"
+                name="vs"
+                placeholder="Max 10 číslic"
+                maxlength="10"
+            />
+            <div id="vs-error" class="field-error" style="display: none;"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="ss">Specifický symbol</label>
+            <input
+                type="text"
+                id="ss"
+                name="ss"
+                placeholder="Max 10 číslic"
+                maxlength="10"
+            />
+            <div id="ss-error" class="field-error" style="display: none;"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="ks">Konstantní symbol</label>
+            <input
+                type="text"
+                id="ks"
+                name="ks"
+                placeholder="Max 4 číslice"
+                maxlength="4"
+            />
+            <div id="ks-error" class="field-error" style="display: none;"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="dt">Datum splatnosti</label>
+            <input
+                type="date"
+                id="dt"
+                name="dt"
+            />
+            <small>Vyberte datum splatnosti</small>
+            <div id="dt-error" class="field-error" style="display: none;"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="msg">Zpráva</label>
+            <input
+                type="text"
+                id="msg"
+                name="msg"
+                placeholder="Platební zpráva (max 250 znaků)"
+                maxlength="250"
+            />
+            <small id="msg-chars">Zbývá 250 znaků</small>
+            <div id="msg-error" class="field-error" style="display: none;"></div>
+          </div>
+
+          <button type="submit">
+            Generovat QR kód
+          </button>
+        </form>
+      </div>
+
+      <div class="qr-code-container">
+        <div id="qr-placeholder" class="qr-code-placeholder">
+          <p class="qr-code-placeholder-text">QR kód se zobrazí zde</p>
+        </div>
+        <div id="qr-result" class="qr-result" style="display: none;">
+          <h3>Váš QR kód</h3>
+          <img id="qr-image" src="" alt="QR platební kód"/>
+          <p>Naskenujte tento QR kód pomocí vaší bankovní aplikace pro provedení platby.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer>
+    <p>Generátor QR kódů pro český platební systém</p>
+  </footer>
+</div>
 <!-- Vite entry point -->
-<script type="module" src="/src/index.tsx"></script>
+<script type="module" src="/src/qr-form-handler.ts"></script>
 </body>
 </html>
