@@ -82,6 +82,24 @@ function initQRFormHandlers() {
   const qrPlaceholder = document.getElementById('qr-placeholder') as HTMLElement;
   const qrResult = document.getElementById('qr-result') as HTMLElement;
   const qrImage = document.getElementById('qr-image') as HTMLImageElement;
+  const clearFormButton = document.getElementById('clear-form') as HTMLButtonElement;
+
+  // Add event listener for clear button
+  if (clearFormButton) {
+    clearFormButton.addEventListener('click', () => {
+      form.reset();
+      clearErrors();
+      
+      // Reset character counters
+      recCharsElement.textContent = `Zbývá 250 znaků`;
+      msgCharsElement.textContent = `Zbývá 250 znaků`;
+      
+      // Reset QR code result
+      qrPlaceholder.style.display = 'flex';
+      qrResult.style.display = 'none';
+      qrImage.src = '';
+    });
+  }
 
   // Add event listeners for character counters
   recInput.addEventListener('input', () => {

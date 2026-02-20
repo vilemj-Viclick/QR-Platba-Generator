@@ -211,9 +211,28 @@
           border-radius: 4px;
           cursor: pointer;
           font-size: 16px;
-          margin-top: 20px;
           width: 100%; /* Full width button for easier tapping on mobile */
           max-width: 300px; /* Limit width on larger screens */
+      }
+      
+      .button-group {
+          display: flex;
+          flex-direction: row;
+          gap: 10px;
+          margin-top: 20px;
+      }
+      
+      .button-group button {
+          flex: 1;
+          margin-top: 0;
+      }
+      
+      .secondary-button {
+          background-color: #6c757d;
+      }
+      
+      .secondary-button:hover {
+          background-color: #5a6268;
       }
       
       /* Media query for mobile devices */
@@ -223,10 +242,15 @@
               padding: 15px; /* Larger touch targets */
           }
           
+          .button-group {
+              flex-direction: column;
+              margin-top: 30px;
+          }
+
           button {
               padding: 15px 20px;
-              margin-top: 30px;
               width: 100%;
+              max-width: 100%;
           }
           
           .form-group {
@@ -426,9 +450,14 @@
             <div id="msg-error" class="field-error hidden"></div>
           </div>
 
-          <button type="submit">
-            Generovat QR kód
-          </button>
+          <div class="button-group">
+            <button type="submit">
+              Generovat QR kód
+            </button>
+            <button type="button" id="clear-form" class="secondary-button">
+              Vymazat formulář
+            </button>
+          </div>
         </form>
       </div>
 
