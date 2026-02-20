@@ -9,7 +9,7 @@ interface FieldErrors {
   };
 }
 
-interface HistoryItem {
+interface QRFormData {
   acc: string;
   rec: string;
   am: string;
@@ -19,6 +19,11 @@ interface HistoryItem {
   ks: string;
   dt: string;
   msg: string;
+}
+
+interface HistoryItem {
+  formData: QRFormData;
+  pinned: boolean;
 }
 
 const STORAGE_KEY = 'qr_history';
@@ -177,15 +182,18 @@ function initQRFormHandlers() {
 
       // Save to history
       saveToHistory({
-        acc: formData.get('acc') as string,
-        rec: formData.get('rec') as string,
-        am: formData.get('am') as string,
-        cc: formData.get('cc') as string,
-        vs: formData.get('vs') as string,
-        ss: formData.get('ss') as string,
-        ks: formData.get('ks') as string,
-        dt: formData.get('dt') as string,
-        msg: formData.get('msg') as string
+        formData: {
+          acc: formData.get('acc') as string,
+          rec: formData.get('rec') as string,
+          am: formData.get('am') as string,
+          cc: formData.get('cc') as string,
+          vs: formData.get('vs') as string,
+          ss: formData.get('ss') as string,
+          ks: formData.get('ks') as string,
+          dt: formData.get('dt') as string,
+          msg: formData.get('msg') as string
+        },
+        pinned: false
       });
 
       // Display the QR code
@@ -247,7 +255,11 @@ function initQRFormHandlers() {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) return [];
     try {
-      return JSON.parse(stored);
+      const parsed = JSON.parse(stored);
+      if (!Array.isArray(parsed)) return [];
+
+      // Only load items that match the current HistoryItem model (with formData and pinned properties)
+      return parsed.filter(item => item && typeof item === 'object' && 'formData' in item && 'pinned' in item) as HistoryItem[];
     } catch (e) {
       console.error('Error parsing history:', e);
       return [];
@@ -257,15 +269,39 @@ function initQRFormHandlers() {
   function saveToHistory(item: HistoryItem) {
     let history = loadHistory();
     // Only remember one form config for one account number
-    history = history.filter(h => h.acc !== item.acc);
+    const existingIndex = history.findIndex(h => h.formData.acc === item.formData.acc);
+    if (existingIndex !== -1) {
+      // Preserve pinned status
+      if (history[existingIndex].pinned) {
+        item.pinned = true;
+      }
+      history.splice(existingIndex, 1);
+    }
+
     // Add to the beginning
     history.unshift(item);
-    // Remember only 10 latest
+
+    // Remember only 10 latest, but never remove pinned items
     if (history.length > MAX_HISTORY) {
-      history = history.slice(0, MAX_HISTORY);
+      let toRemove = history.length - MAX_HISTORY;
+      for (let i = history.length - 1; i >= 0 && toRemove > 0; i--) {
+        if (!history[i].pinned) {
+          history.splice(i, 1);
+          toRemove--;
+        }
+      }
     }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
     renderHistory();
+  }
+
+  function togglePin(index: number) {
+    const history = loadHistory();
+    if (history[index]) {
+      history[index].pinned = !history[index].pinned;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+      renderHistory();
+    }
   }
 
   function renderHistory() {
@@ -283,11 +319,17 @@ function initQRFormHandlers() {
     historyContainer.classList.remove('hidden');
     historyList.innerHTML = '';
     
-    history.forEach(item => {
+    history.forEach((item, index) => {
       const li = document.createElement('li');
       li.className = 'history-item';
       
-      const displayName = item.rec || item.acc;
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'history-item-content';
+      contentDiv.tabIndex = 0;
+      contentDiv.setAttribute('role', 'button');
+      
+      const displayName = item.formData.rec || item.formData.acc;
+      contentDiv.setAttribute('aria-label', `Obnovit platbu pro ${displayName}`);
       
       const nameSpan = document.createElement('span');
       nameSpan.className = 'history-item-name';
@@ -295,15 +337,37 @@ function initQRFormHandlers() {
       
       const accSpan = document.createElement('span');
       accSpan.className = 'history-item-acc';
-      accSpan.textContent = item.acc;
+      accSpan.textContent = item.formData.acc;
       
-      li.appendChild(nameSpan);
-      li.appendChild(accSpan);
+      contentDiv.appendChild(nameSpan);
+      contentDiv.appendChild(accSpan);
       
-      li.addEventListener('click', () => {
+      li.appendChild(contentDiv);
+      
+      const pinButton = document.createElement('button');
+      pinButton.className = 'pin-button';
+      if (item.pinned) pinButton.classList.add('pinned');
+      pinButton.textContent = '📌';
+      pinButton.title = item.pinned ? 'Odepnout' : 'Připnout';
+      
+      pinButton.addEventListener('click', () => {
+        togglePin(index);
+      });
+      
+      li.appendChild(pinButton);
+      
+      const restoreAction = () => {
         populateForm(item);
         // Trigger generation
         form.dispatchEvent(new Event('submit'));
+      };
+
+      contentDiv.addEventListener('click', restoreAction);
+      contentDiv.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          restoreAction();
+        }
       });
       
       historyList.appendChild(li);
@@ -311,11 +375,11 @@ function initQRFormHandlers() {
   }
 
   function populateForm(item: HistoryItem) {
-    const fields: (keyof HistoryItem)[] = ['acc', 'rec', 'am', 'cc', 'vs', 'ss', 'ks', 'dt', 'msg'];
+    const fields: (keyof QRFormData)[] = ['acc', 'rec', 'am', 'cc', 'vs', 'ss', 'ks', 'dt', 'msg'];
     fields.forEach(field => {
       const element = document.getElementById(field);
       if (element instanceof HTMLInputElement || element instanceof HTMLSelectElement) {
-        element.value = item[field] || '';
+        element.value = item.formData[field] || '';
       }
     });
     
