@@ -9,6 +9,21 @@ interface FieldErrors {
   };
 }
 
+interface HistoryItem {
+  acc: string;
+  rec: string;
+  am: string;
+  cc: string;
+  vs: string;
+  ss: string;
+  ks: string;
+  dt: string;
+  msg: string;
+}
+
+const STORAGE_KEY = 'qr_history';
+const MAX_HISTORY = 10;
+
 // Initialize the form when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   initQRFormHandlers();
@@ -84,6 +99,9 @@ function initQRFormHandlers() {
   const qrImage = document.getElementById('qr-image') as HTMLImageElement;
   const clearFormButton = document.getElementById('clear-form') as HTMLButtonElement;
 
+  // Render initial history
+  renderHistory();
+
   // Add event listener for clear button
   if (clearFormButton) {
     clearFormButton.addEventListener('click', () => {
@@ -157,6 +175,19 @@ function initQRFormHandlers() {
       // Generate QR code as data URL
       const qrCodeDataURL = await QRCode.toDataURL(qrString);
 
+      // Save to history
+      saveToHistory({
+        acc: formData.get('acc') as string,
+        rec: formData.get('rec') as string,
+        am: formData.get('am') as string,
+        cc: formData.get('cc') as string,
+        vs: formData.get('vs') as string,
+        ss: formData.get('ss') as string,
+        ks: formData.get('ks') as string,
+        dt: formData.get('dt') as string,
+        msg: formData.get('msg') as string
+      });
+
       // Display the QR code
       qrImage.src = qrCodeDataURL;
       qrPlaceholder.style.display = 'none';
@@ -209,6 +240,88 @@ function initQRFormHandlers() {
         inputElement.classList.add('input-error');
       }
     }
+  }
+
+  // History management functions
+  function loadHistory(): HistoryItem[] {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) return [];
+    try {
+      return JSON.parse(stored);
+    } catch (e) {
+      console.error('Error parsing history:', e);
+      return [];
+    }
+  }
+
+  function saveToHistory(item: HistoryItem) {
+    let history = loadHistory();
+    // Only remember one form config for one account number
+    history = history.filter(h => h.acc !== item.acc);
+    // Add to the beginning
+    history.unshift(item);
+    // Remember only 10 latest
+    if (history.length > MAX_HISTORY) {
+      history = history.slice(0, MAX_HISTORY);
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+    renderHistory();
+  }
+
+  function renderHistory() {
+    const history = loadHistory();
+    const historyContainer = document.getElementById('qr-history');
+    const historyList = document.getElementById('qr-history-list');
+    
+    if (!historyContainer || !historyList) return;
+    
+    if (history.length === 0) {
+      historyContainer.classList.add('hidden');
+      return;
+    }
+    
+    historyContainer.classList.remove('hidden');
+    historyList.innerHTML = '';
+    
+    history.forEach(item => {
+      const li = document.createElement('li');
+      li.className = 'history-item';
+      
+      const displayName = item.rec || item.acc;
+      
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'history-item-name';
+      nameSpan.textContent = displayName;
+      
+      const accSpan = document.createElement('span');
+      accSpan.className = 'history-item-acc';
+      accSpan.textContent = item.acc;
+      
+      li.appendChild(nameSpan);
+      li.appendChild(accSpan);
+      
+      li.addEventListener('click', () => {
+        populateForm(item);
+        // Trigger generation
+        form.dispatchEvent(new Event('submit'));
+      });
+      
+      historyList.appendChild(li);
+    });
+  }
+
+  function populateForm(item: HistoryItem) {
+    const fields: (keyof HistoryItem)[] = ['acc', 'rec', 'am', 'cc', 'vs', 'ss', 'ks', 'dt', 'msg'];
+    fields.forEach(field => {
+      const element = document.getElementById(field);
+      if (element instanceof HTMLInputElement || element instanceof HTMLSelectElement) {
+        element.value = item[field] || '';
+      }
+    });
+    
+    // Trigger input events to update character counters
+    recInput.dispatchEvent(new Event('input'));
+    msgInput.dispatchEvent(new Event('input'));
   }
 }
 

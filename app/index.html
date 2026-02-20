@@ -142,6 +142,58 @@
           height: auto;
           margin: 20px 0;
       }
+
+      .qr-history {
+          margin-top: 30px;
+          width: 100%;
+          border-top: 1px solid #eee;
+          padding-top: 20px;
+      }
+
+      .qr-history h3 {
+          font-size: 1.1em;
+          margin-bottom: 15px;
+          text-align: center;
+      }
+
+      .history-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+      }
+
+      .history-item {
+          padding: 12px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: all 0.2s;
+          background-color: #fff;
+          font-size: 0.95em;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+      }
+
+      .history-item:hover {
+          background-color: #f0f0f0;
+          border-color: #bbb;
+      }
+
+      .history-item-name {
+          font-weight: 500;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+      }
+
+      .history-item-acc {
+          font-size: 0.85em;
+          color: #666;
+      }
       
       /* Media query for QR code on mobile */
       @media (max-width: 768px) {
@@ -470,6 +522,10 @@
           <img id="qr-image" src="" alt="QR platební kód"/>
           <p>Naskenujte tento QR kód pomocí vaší bankovní aplikace pro provedení platby.</p>
         </div>
+        <div id="qr-history" class="qr-history hidden">
+          <h3>Poslední QR kódy</h3>
+          <ul id="qr-history-list" class="history-list"></ul>
+        </div>
       </div>
     </div>
   </main>
@@ -488,6 +544,7 @@
       
       <h3>Soukromí</h3>
       <p>Tento generátor funguje <strong>kompletně offline</strong> - všechny operace probíhají přímo ve vašem prohlížeči. Nepoužíváme žádné sledovací nástroje, neukládáme žádná data a nepoužíváme cookies.</p>
+      <p>"Poslední QR kódy" se ukládají pouze na vašem zařízení. (LocalStorage)</p>
       
       <h3>GitHub Repozitář</h3>
       <p>Zdrojový kód projektu je dostupný na <a href="https://github.com/vilemj-Viclick/QR-Platba-Generator" target="_blank">GitHub</a>.</p>
